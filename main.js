@@ -1,19 +1,20 @@
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 var interval
+var frames = 0
 var imagenes = {
-  mario: "https://vignette.wikia.nocookie.net/mario-fanon/images/6/6c/Super_Paper_Mario_icon.png/revision/latest?cb=20130417011646&path-prefix=es",
+  mario: "https://mbtskoudsalg.com/images/drawing-bugs-pill-bug-1.png",
 }
-var vel = 3;
+var vel = 2.2;
 
 
 //ctx.fillRect(0,0,300,200);
-
-function Circle(color, radius,x,y, velo){
+//Se genera el circulo
+function Circle(color, radius,x,y, velo, width, height){
   this.x = x ? x : 50;
   this.y = y ? y : 50;
-  this.width = 0;
-  this.height = 0;
+  this.width = width ? width : 0;
+  this.height = height ? height : 0;
   this.radius = radius ? radius : 10;
   this.color = color ? color : "red";
   this.isMoving = true;
@@ -28,11 +29,12 @@ function Circle(color, radius,x,y, velo){
     
       
   }
-  
+  //funcion de toque
   this.isTouching = function(circle){
     return this.getDistance(circle) < this.radius + circle.radius;
   }
   
+  //suma movimiento a los circulos
   this.move = function(){
     if(!this.isMoving) return;
     var rX = this.x + this.radius;
@@ -53,8 +55,10 @@ function Circle(color, radius,x,y, velo){
     //techo y pis
     if(rY > canvas.height){
       this.toUp = true;
+      this.color = "yellow";
     }else if(rY < 0 + this.radius * 2 ){
       this.toUp = false;
+      //circle2.color = "yellow";
     }
     //paredes
     if(rX > canvas.width){
@@ -64,19 +68,12 @@ function Circle(color, radius,x,y, velo){
     }
   }
   
-
-
-
-  
+//lo dibuja
   this.draw = function(){
     this.move();
     ctx.beginPath();
     ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
     ctx.fillStyle = this.color;
-  
-    
-   
-    
     ctx.fill();
     ctx.closePath();
     
@@ -84,19 +81,21 @@ function Circle(color, radius,x,y, velo){
 }
 
 var circle1 = new Circle();
-var circle2 = new Circle("green", 30, 100,100, 2);
+var circle2 = new Circle("green", 30, 100,100, 2, 0, 0);
+var mario = new Character(imagenes.mario)
+
 //circle1.draw();
 //circle2.draw();
 
 
-
+//cachador
 function Character(link,x,y){
   this.image = new Image()
   this.image.src = link
   this.x = x || 0
-  this.y = y || canvas.height -100
-  this.width = 100
-  this.height = 100
+  this.y = y || canvas.height -60
+  this.width = 200
+  this.height = 60
   this.image.onload = function(){
     this.draw()
   }.bind(this)
@@ -114,19 +113,19 @@ function Character(link,x,y){
         }
       }
   
-        this.isTouching = function(item){
-          return (this.x < item.x + item.width) &&
-          (this.x + this.width > item.x) &&
-          (this.y < item.y + item.height) &&
-          (this.y + this.height > item.y);
-      }  
+      //funcion de toque de cachador
+      this.isTouching = function(item){
+        return (this.x < item.x + item.width) &&
+        (this.x + this.width > item.x) &&
+        (this.y < item.y + item.height) &&
+        (this.y + this.height > item.y);
+    }  
   
   
   
 }
 
 //instancias
-var mario = new Character(imagenes.mario)
 //var goomba = new Character(imagenes.goomba,0,100)
 /*addEventListener('mousemove', function(e){
   console.log(e)
@@ -134,15 +133,91 @@ var mario = new Character(imagenes.mario)
   mario.y = e.clientY;
 });*/
 //funcion principal
-function update(){
-    interval = setInterval(function(){
-    ctx.clearRect(0,0,canvas.width,canvas.height)
-    //mario.x+=1
 
-//    mario.draw()
-    //if(mario.x > canvas.width) mario.x = 0
-  },1000/60)
-}
+
+
+
+
+
+
+/*addEventListener('mousemove', function(e){
+  console.log(e)
+  mario.x = e.clientX;
+  mario.y = e.clientY;
+});*/
+
+var interval;
+
+interval = setInterval(function(){
+  frames++
+  console.log(frames)
+  ctx.clearRect(0,0,1100,300);
+  circle1.draw();
+  circle2.draw();
+  //mario.x = circle2.x - 50; //Para ponerle imagen
+  //mario.y = circle2.y - 50;
+  mario.draw()
+
+
+
+  if(circle1.isTouching(circle2)){
+    circle2.color = "peru";
+    circle1.color = "peru";
+    if(vel < 5){
+      vel += 0;
+    }
+    circle2.toUp = !circle2.toUp
+    //circle2.toLeft = !circle2.toLeft
+    circle1.toUp = !circle1.toUp
+    circle1.toLeft = !circle1.toLeft
+    if(velo < 5){
+      velo += 0;
+    }
+  }else{
+    //circle2.color = "green";
+    //circle1.color = "red";
+    
+  }
+  
+  
+  
+  if(mario.isTouching(circle2)){
+    circle2.color = "purple";
+ 
+    circle2.toUp = !circle2.toUp
+    //circle2.toLeft = !circle2.toLeft
+    if(velo < 4){
+      velo += 1;
+    }
+  }else{
+    //circle2.color = "green";
+    //circle1.color = "red";
+    
+  }
+
+
+  if(mario.isTouching(circle1)){
+    circle1.color = "purple";
+    if(vel < 4){
+      vel += 0;
+    }
+    circle1.toUp = !circle1.toUp
+    //circle1.toLeft = !circle1.toLeft
+ 
+  }else{
+    //circle2.color = "green";
+    //circle1.color = "red";
+    
+  }
+  
+   
+  
+  
+}, 1000/60);
+
+
+
+
 
 addEventListener('keydown', function(e){
   if(e.keyCode === 81){
@@ -159,75 +234,6 @@ addEventListener('keydown', function(e){
   
   
 })
-
-
-
-
-
-/*addEventListener('mousemove', function(e){
-  console.log(e)
-  circle2.x = e.clientX;
-  circle2.y = e.clientY;
-});*/
-
-var interval;
-
-interval = setInterval(function(){
-  ctx.clearRect(0,0,1100,300);
-  circle1.draw();
-  circle2.draw();
-  //mario.x = circle2.x - 50; //Para ponerle imagen
-  //mario.y = circle2.y - 50;
-  mario.draw()
-
-
-
-  if(circle1.isTouching(circle2)){
-    circle2.color = "peru";
-    circle1.color = "peru";
-    if(vel < 10){
-      vel += 1;
-    }
-    circle2.toUp = !circle2.toUp
-    //circle2.toLeft = !circle2.toLeft
-    circle1.toUp = !circle1.toUp
-    circle1.toLeft = !circle1.toLeft
-    if(velo < 5){
-      velo += 1;
-    }
-  }else{
-    circle2.color = "green";
-    circle1.color = "red";
-    
-  }
-  
-  
-  
-  if(mario.isTouching(circle2)){
-    circle2.color = "peru";
-    if(vel < 10){
-      vel += 1;
-    }
-    circle2.toUp = !circle2.toUp
-    //circle2.toLeft = !circle2.toLeft
-    if(velo < 5){
-      velo += 1;
-    }
-  }else{
-    circle2.color = "green";
-    circle1.color = "red";
-    
-  }
-  
-   
-  
-  
-}, 1000/60);
-
-
-
-
-
 
 
 
