@@ -5,7 +5,8 @@ var frames = 0
 var circles = []
 var imagenes = {
   mario: "https://mbtskoudsalg.com/images/drawing-bugs-pill-bug-1.png",
-  ball: "http://www.pngall.com/wp-content/uploads/2016/06/Beach-Ball.png"
+  ball: "http://www.pngall.com/wp-content/uploads/2016/06/Beach-Ball.png",
+  ball2: "http://1.bp.blogspot.com/-Uq-KszfMzkU/Uuk4WdF_R2I/AAAAAAAAAJk/HinNF82JwS4/s1600/2LYamDK.png"
 }
 var vel = 2.2;
 
@@ -21,7 +22,7 @@ function Circle(color, radius,x,y, velo, width, height){
   this.y = y ? y : 50;
   this.width = width ? width : 0;
   this.height = height ? height : 0;
-  this.radius = radius ? radius : 10;
+  this.radius = radius ? radius : 1;
   this.color = color ? color : "red";
   this.isMoving = true;
   this.toUp = false;
@@ -37,7 +38,7 @@ function Circle(color, radius,x,y, velo, width, height){
   }
   //funcion de toque
   this.isTouching = function(circle){
-    return this.getDistance(circle) < this.radius + circle.radius;
+    return this.getDistance(circle) < this.radius + circle.radius + 15;
   }
   
   //suma movimiento a los circulos
@@ -136,13 +137,61 @@ function Character(link,x,y,width,height){
 
 
 
+
+function Pelotitas(link,x,y,width,height){
+  this.image = new Image()
+  this.image.src = link
+  this.x = x || 0
+  this.y = y || canvas.height -60
+  this.width = width  || 40
+  this.height = height || 40
+  this.img1 = new Image()
+  this.img1.src = imagenes.ball 
+  this.img2 = new Image()
+  this.img2.src = imagenes.ball2 
+
+  this.image.onload = function(){
+    //this.draw()
+  }.bind(this)
+  
+  this.draw = function(){
+      this.boundaries()
+      var img = this.which ? this.img1:this.img2;
+
+    ctx.drawImage(img, this.x, this.y, this.width, this.height)
+
+    if(frames%20===0) this.toggleWhich();
+      }
+        this.toggleWhich = function(){
+        this.which = !this.which;
+      }
+  
+        this.boundaries = function(){
+        if(this.x+this.width > canvas.width){
+          this.x = canvas.width-this.width
+        }else if(this.x < 20) {
+          this.x=20
+        }
+      }
+  
+      //funcion de toque de cachador
+      this.isTouching = function(item){
+        return (this.x < item.x + item.width) &&
+        (this.x + this.width > item.x) &&
+        (this.y < item.y + item.height) &&
+        (this.y + this.height > item.y);
+    }  
+}
+
+
+
 //instancias
 
 var circle1 = new Circle();
 var circle2 = new Circle("green", 30, 100,100, 2, 0, 0);
 //var circle3 = new Circle();
 var mario = new Character(imagenes.mario,0,canvas.height -60,200,60);
-var ball = new Character(imagenes.ball);
+var ball = new Pelotitas(imagenes.ball);
 var circle = new Circle();
 
 //circle1.draw();
@@ -166,7 +215,7 @@ function update(){
   console.log(frames);
   
   ctx.clearRect(0,0,1100,300);
-  circle1.draw();
+  //circle1.draw();
   circle2.draw(); 
   mario.draw();
   //ball.x = circle2.x - 35;
