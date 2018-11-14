@@ -62,10 +62,7 @@ function Circle(color, radius,x,y, velo, width, height){
     if(rY > canvas.height){
       this.toUp = true;
       this.color = "yellow";
-      var index = circles.indexOf(this.circle);
-      if (index > -1) {
-        array.splice(index, 1);
-        }
+      
       //circles.pop(circle)
 
     }else if(rY < 0 + this.radius * 2 ){
@@ -253,11 +250,25 @@ for(var circle of circles){
       vel += 0;
     }
     circle.toUp = !circle.toUp
+    //circles.pop(circle)
+
   }
 }
 
 
 
+for(var circle of circles){
+  if(circle.y > canvas.height -10 ){
+    circle.color = "yellow"
+    //circles.pop(circle)
+    var index = circles.indexOf(circle);
+if (index > -1) {
+  circles.splice(index, 1);
+}
+
+  }
+}
+        
 
 
 
@@ -286,7 +297,6 @@ generateCircles()
 circles.forEach(function(circle){
     circle.draw()
     ball.draw();
-
     ball.x = circle.x - 15;
     ball.y = circle.y - 15;
 })
