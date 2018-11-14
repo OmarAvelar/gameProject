@@ -2,10 +2,16 @@ var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 var interval
 var frames = 0
+var circles = []
 var imagenes = {
   mario: "https://mbtskoudsalg.com/images/drawing-bugs-pill-bug-1.png",
+  ball: "http://www.pngall.com/wp-content/uploads/2016/06/Beach-Ball.png"
 }
 var vel = 2.2;
+
+
+
+
 
 
 //ctx.fillRect(0,0,300,200);
@@ -56,10 +62,21 @@ function Circle(color, radius,x,y, velo, width, height){
     if(rY > canvas.height){
       this.toUp = true;
       this.color = "yellow";
+      var index = circles.indexOf(this.circle);
+      if (index > -1) {
+        array.splice(index, 1);
+        }
+      //circles.pop(circle)
+
     }else if(rY < 0 + this.radius * 2 ){
       this.toUp = false;
       //circle2.color = "yellow";
     }
+
+    
+
+
+
     //paredes
     if(rX > canvas.width){
       this.toLeft = true;
@@ -68,7 +85,7 @@ function Circle(color, radius,x,y, velo, width, height){
     }
   }
   
-//lo dibuja
+//
   this.draw = function(){
     this.move();
     ctx.beginPath();
@@ -76,33 +93,31 @@ function Circle(color, radius,x,y, velo, width, height){
     ctx.fillStyle = this.color;
     ctx.fill();
     ctx.closePath();
-    
   }
 }
 
-var circle1 = new Circle();
-var circle2 = new Circle("green", 30, 100,100, 2, 0, 0);
-var mario = new Character(imagenes.mario)
 
-//circle1.draw();
-//circle2.draw();
+
+
+
+
+
 
 
 //cachador
-function Character(link,x,y){
+function Character(link,x,y,width,height){
   this.image = new Image()
   this.image.src = link
   this.x = x || 0
   this.y = y || canvas.height -60
-  this.width = 200
-  this.height = 60
+  this.width = width  || 40
+  this.height = height || 40
   this.image.onload = function(){
-    this.draw()
+    //this.draw()
   }.bind(this)
   
   this.draw = function(){
       this.boundaries()
-
     ctx.drawImage(this.image, this.x, this.y, this.width, this.height)
   }
         this.boundaries = function(){
@@ -120,44 +135,49 @@ function Character(link,x,y){
         (this.y < item.y + item.height) &&
         (this.y + this.height > item.y);
     }  
-  
-  
-  
 }
 
+
+
 //instancias
-//var goomba = new Character(imagenes.goomba,0,100)
-/*addEventListener('mousemove', function(e){
-  console.log(e)
-  mario.x = e.clientX;
-  mario.y = e.clientY;
-});*/
-//funcion principal
+
+var circle1 = new Circle();
+var circle2 = new Circle("green", 30, 100,100, 2, 0, 0);
+//var circle3 = new Circle();
+var mario = new Character(imagenes.mario,0,canvas.height -60,200,60);
+var ball = new Character(imagenes.ball);
+var circle = new Circle();
+
+//circle1.draw();
+//circle2.draw();
 
 
 
 
+function start(){
+  circles = []
+  frames = 0
+  //flappy = new Flappy()
+  if(!interval) interval = setInterval(update,1000/60)
+}
 
 
 
-/*addEventListener('mousemove', function(e){
-  console.log(e)
-  mario.x = e.clientX;
-  mario.y = e.clientY;
-});*/
-
-var interval;
-
-interval = setInterval(function(){
-  frames++
-  console.log(frames)
+function update(){
+  
+  frames++;
+  console.log(frames);
+  
   ctx.clearRect(0,0,1100,300);
   circle1.draw();
-  circle2.draw();
-  //mario.x = circle2.x - 50; //Para ponerle imagen
-  //mario.y = circle2.y - 50;
-  mario.draw()
+  circle2.draw(); 
+  mario.draw();
+  //ball.x = circle2.x - 35;
+  //ball.y = circle2.y - 35;
 
+ 
+  drawCircles();
+  
 
 
   if(circle1.isTouching(circle2)){
@@ -176,11 +196,8 @@ interval = setInterval(function(){
   }else{
     //circle2.color = "green";
     //circle1.color = "red";
-    
   }
-  
-  
-  
+
   if(mario.isTouching(circle2)){
     circle2.color = "purple";
  
@@ -209,11 +226,71 @@ interval = setInterval(function(){
     //circle1.color = "red";
     
   }
+
+
+
+for(var circle of circles){
+  if(circle.isTouching(circle2)){
+    circle.color = "brown";
+    circle2.toUp = !circle2.toUp
+    circle2.toLeft = !circle2.toLeft
+
+    //circle2.toLeft = !circle2.toLeft
+    circle.toUp = !circle.toUp
+    circle.toLeft = !circle.toLeft
+    if(vel < 4){
+      vel += 0;
+    }
+    
+
+  }
+}
+
+for(var circle of circles){
+  if(mario.isTouching(circle)){
+    circle.color = "purple";
+    if(vel < 4){
+      vel += 0;
+    }
+    circle.toUp = !circle.toUp
+  }
+}
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+function generateCircles(){
+  if(frames%150===0) {
+      //var height = Math.floor(Math.random()*400)
+      circles.push(new Circle())
+      
+  }
   
-   
-  
-  
-}, 1000/60);
+}
+
+
+function drawCircles(){
+generateCircles()
+
+circles.forEach(function(circle){
+    circle.draw()
+    ball.draw();
+
+    ball.x = circle.x - 15;
+    ball.y = circle.y - 15;
+})
+}
 
 
 
@@ -223,20 +300,14 @@ addEventListener('keydown', function(e){
   if(e.keyCode === 81){
     clearInterval(interval)
   }else if(e.keyCode === 13){
-    if(!interval) update()
+    return start()
   }
-  if(e.keyCode === 40){
+  if(e.keyCode === 39){
     mario.x += 50
   }
-  if(e.keyCode === 38){
+  if(e.keyCode === 37){
     mario.x-=50
   }
   
   
 })
-
-
-
-
-
-  
