@@ -8,6 +8,7 @@ var generateLevel = 0
 var frames = 0
 var createSpeed = 600
 var circles = []
+multiplayer = 2
 //var randomNum = Math.floor(Math.random()*10);
 var imagenes = {
   mario: "star.png",
@@ -28,7 +29,7 @@ var vel = 2.2;
 //Se genera el circulo
 function Circle(color, radius,x,y, velo, width, height){
   this.x = x ? x : 50;
-  this.y = y ? y : 50;
+  this.y = y ? y : 100;
   this.width = width ? width : 0;
   this.height = height ? height : 0;
   this.radius = radius ? radius : 1;
@@ -162,6 +163,57 @@ function Character(link,x,y,width,height){
 
 
 
+function CharacterDos(link,x,y,width,height){
+  this.image = new Image()
+  this.image.src = link
+  this.x = x || 0
+  this.y = y || 10;
+  this.width = width  || 80
+  this.height = height || 80
+  this.image.onload = function(){
+    //this.draw()
+  }.bind(this)
+  
+
+  this.img5 = new Image()
+  this.img5.src = imagenes.star1 
+  this.img6 = new Image()
+  this.img6.src = imagenes.star2 
+
+
+  this.draw = function(){
+      this.boundaries()
+
+      var img = this.which ? this.img5:this.img6;
+
+    ctx.drawImage(img, this.x, this.y, this.width, this.height)
+    if(frames%80===0) this.toggleWhich();
+  }
+    this.toggleWhich = function(){
+    this.which = !this.which;
+  }
+  
+        this.boundaries = function(){
+        if(this.x+this.width > canvas.width){
+          this.x = canvas.width-this.width
+        }else if(this.x < 20) {
+          this.x=20
+        }
+      }
+  
+      //funcion de toque de cachador
+      this.isTouching = function(item){
+        return (this.x < item.x + item.width) &&
+        (this.x + this.width > item.x) &&
+        (this.y < item.y + item.height) &&
+        (this.y + this.height > item.y);
+    }  
+}
+
+
+
+
+
 
 function Pelotitas(){
   //this.image = new Image()
@@ -274,6 +326,7 @@ var circle1 = new Circle();
 var circle2 = new Circle("yellow", 30, 100,100, 6, 0, 0);
 //var circle3 = new Circle();
 var mario = new Character(imagenes.mario,0,canvas.height -30,200,40);
+var marioDos = new Character(imagenes.mario,0,30,200,40);
 var ball = new Pelotitas();
 var circle = new Circle();
 var ballota = new Pelotota();
@@ -302,7 +355,7 @@ function update(){
   ctx.clearRect(0,0,1100,300);
   //circle1.draw();
   //if (counter > 2){circle2.draw();ballota.draw();}
-  if(counterLevel >= 4 && counterLevel < 5){
+  if(counterLevel >= 3 && counterLevel < 5){
     circle2.draw();
     ballota.draw()
     ballota.x = circle2.x - 55;
@@ -310,6 +363,11 @@ function update(){
   }
   ////circle2.draw(); 
   mario.draw();
+  /////
+  if(multiplayer >= 1){
+    marioDos.draw();
+  }
+  
   ////ballota.draw()
   ////ballota.x = circle2.x - 55;
   ////ballota.y = circle2.y - 55;
@@ -320,7 +378,7 @@ function update(){
   drawCircles();
   
 
-  if(counterLevel >= 4 && counterLevel < 5){
+  if(counterLevel >= 3 && counterLevel < 5){
     if(circle1.isTouching(circle2)){
       circle2.color = "peru";
       circle1.color = "peru";
@@ -408,7 +466,7 @@ function update(){
 for(var circle of circles){
 
 //pez gordo
-  if(counterLevel >= 4 && counterLevel < 5){
+  if(counterLevel >= 3 && counterLevel < 5){
     if(circle.isTouching(circle2)){
       circle.color = "brown";
       circle2.toUp = !circle2.toUp
@@ -458,6 +516,21 @@ for(var circle of circles){
   }
 }
 
+for(var circle of circles){
+  if(marioDos.isTouching(circle)){
+    circle.color = "green";
+    if(vel < 4){
+      vel += 0;
+    }
+    circle.toUp = !circle.toUp
+    //circles.pop(circle)
+    circle.toUp = !circle.toUp
+    circle.toUp = !circle.toUp
+
+  }
+}
+
+
 
 
 for(var circle of circles){
@@ -472,6 +545,27 @@ if (index > -1) {
 console.log("se han muerto " + counter + " marimos")
 if (counter > 10){clearInterval(interval)}
   }
+
+  if(multiplayer >= 1){
+    if(circle.y < 10 ){
+      circle.color = "yellow"
+      //circles.pop(circle)
+      var index = circles.indexOf(circle);
+  if (index > -1) {
+    counter++
+    circles.splice(index, 1);
+  }
+  console.log("se han muerto " + counter + " marimos")
+  if (counter > 10){
+    console.log("se han muerto los marimos")
+    clearInterval(interval)
+  }
+    }
+
+  }
+
+
+
 
 
   if(circle.x > canvas.width -30){
@@ -488,7 +582,7 @@ console.log("counter level : " + counterLevel)
     counterLevel++;
   }
 
-if (counterWin > 20){
+if (counterWin > 12){
   console.log("Ganaste!")
   clearInterval(interval)}
   }
@@ -512,6 +606,7 @@ function generateCircles(){
 
 switch (counterLevel){
 
+  case 0: createSpeed = 400; break;
   case 1: createSpeed = 100; break;
   case 2: createSpeed = 400; break;
   case 3: createSpeed = 500; vel=4;  break;
@@ -560,6 +655,12 @@ addEventListener('keydown', function(e){
   if(e.keyCode === 37){
     mario.x-=50
   }
-  
+
+  if(e.keyCode === 68){
+    marioDos.x += 50
+  }
+  if(e.keyCode === 65){
+    marioDos.x -=50
+  }
   
 })
