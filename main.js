@@ -10,7 +10,8 @@ var imagenes = {
   ball2: "marimo1.2.png",
   ball3: "marimo2.png",
   ball4: "marimo2.2.png",
-  blowFish: "https://i.pinimg.com/originals/0e/0d/61/0e0d6156e185837274c71cd61521fd73.png"
+  blowFish: "giphy.png",
+  blowFish2: "giphy3.png"
 }
 var vel = 2.2;
 
@@ -39,7 +40,7 @@ function Circle(color, radius,x,y, velo, width, height){
   }
   //funcion de toque
   this.isTouching = function(circle){
-    return this.getDistance(circle) < this.radius + circle.radius + 15;
+    return this.getDistance(circle) < this.radius + circle.radius + 35;
   }
   
   //suma movimiento a los circulos
@@ -194,15 +195,65 @@ if(randomNum < 5){
 
 
 
+function Pelotota(){
+  //this.image = new Image()
+  //this.image.src = link
+  this.imga = new Image()
+  this.imga.src = imagenes.blowFish
+  this.x =  0
+  this.y =  canvas.height -60
+  this.width =  105
+  this.height =  105
+
+  this.img3 = new Image()
+  this.img3.src = imagenes.blowFish 
+  this.img4 = new Image()
+  this.img4.src = imagenes.blowFish2 
+
+
+  this.draw = function(){
+      this.boundaries()
+      var img = this.which ? this.img3:this.img4;
+
+
+    ctx.drawImage(img, this.x, this.y, this.width, this.height)
+    if(frames%20===0) this.toggleWhich();
+  }
+    this.toggleWhich = function(){
+    this.which = !this.which;
+  }
+  
+  
+        this.boundaries = function(){
+        if(this.x+this.width > canvas.width){
+          this.x = canvas.width-this.width
+        }else if(this.x < 20) {
+          this.x=20
+        }
+      }
+  
+      //funcion de toque de cachador
+      this.isTouching = function(item){
+        return (this.x < item.x + item.width) &&
+        (this.x + this.width > item.x) &&
+        (this.y < item.y + item.height) &&
+        (this.y + this.height > item.y);
+    }  
+}
+
+
+
+
+
 //instancias
 
 var circle1 = new Circle();
-var circle2 = new Circle("green", 30, 100,100, 2, 0, 0);
+var circle2 = new Circle("pink", 20, 100,100, 2, 0, 0);
 //var circle3 = new Circle();
 var mario = new Character(imagenes.mario,0,canvas.height -60,200,60);
 var ball = new Pelotitas();
 var circle = new Circle();
-
+var ballota = new Pelotota();
 //circle1.draw();
 //circle2.draw();
 
@@ -227,6 +278,9 @@ function update(){
   //circle1.draw();
   circle2.draw(); 
   mario.draw();
+  ballota.draw()
+  ballota.x = circle2.x - 55;
+  ballota.y = circle2.y - 55;
   //ball.x = circle2.x - 35;
   //ball.y = circle2.y - 35;
 
@@ -355,8 +409,10 @@ generateCircles()
 circles.forEach(function(circle){
     circle.draw()
     ball.draw();
+    //ballota.draw();
     ball.x = circle.x - 15;
     ball.y = circle.y - 15;
+    
     
 })
 }
