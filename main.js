@@ -3,7 +3,9 @@ var ctx = canvas.getContext('2d');
 var interval
 var counter = 0
 var counterWin = 0
+var counterLevel = 0
 var frames = 0
+var createSpeed = 600
 var circles = []
 //var randomNum = Math.floor(Math.random()*10);
 var imagenes = {
@@ -113,7 +115,7 @@ function Character(link,x,y,width,height){
   this.image = new Image()
   this.image.src = link
   this.x = x || 0
-  this.y = y || canvas.height -60
+  this.y = y || canvas.height -10
   this.width = width  || 80
   this.height = height || 80
   this.image.onload = function(){
@@ -269,7 +271,7 @@ function Pelotota(){
 var circle1 = new Circle();
 var circle2 = new Circle("yellow", 30, 100,100, 2, 0, 0);
 //var circle3 = new Circle();
-var mario = new Character(imagenes.mario,0,canvas.height -80,200,120);
+var mario = new Character(imagenes.mario,0,canvas.height -30,200,40);
 var ball = new Pelotitas();
 var circle = new Circle();
 var ballota = new Pelotota();
@@ -295,6 +297,7 @@ function update(){
   
   ctx.clearRect(0,0,1100,300);
   //circle1.draw();
+  //if (counter > 2){circle2.draw();ballota.draw();}
   circle2.draw(); 
   mario.draw();
   ballota.draw()
@@ -343,8 +346,8 @@ function update(){
 
   if(mario.isTouching(circle1)){
     circle1.color = "purple";
-    if(vel < 4){
-      vel += 0;
+    if(vel < 3){
+      vel += .5;
     }
     circle1.toUp = !circle1.toUp
     //circle1.toLeft = !circle1.toLeft
@@ -382,6 +385,8 @@ for(var circle of circles){
     }
     circle.toUp = !circle.toUp
     //circles.pop(circle)
+    circle.toUp = !circle.toUp
+    circle.toUp = !circle.toUp
 
   }
 }
@@ -406,12 +411,17 @@ if (counter > 10){clearInterval(interval)}
     //circles.pop(circle)
     var index = circles.indexOf(circle);
 if (index > -1) {
-  counterWin++
   circles.splice(index, 1);
 }
+counterWin++
 console.log("se han salvado " + counterWin + " marimos")
-if (counter > 10){
-  console.log("Ganaste Bitch!")
+console.log("counter level : " + counterLevel)
+  if (counterWin%2===0){
+    counterLevel++;
+  }
+
+if (counterWin > 10){
+  console.log("Ganaste!")
   clearInterval(interval)}
   }
 }
@@ -429,7 +439,16 @@ if (counter > 10){
 
 
 function generateCircles(){
-  if(frames%150===0) {
+  
+  //if (counter > 2){createSpeed = 100;}else{createSpeed=750;}
+
+switch (counterLevel){
+
+  case 1: createSpeed = 100; break;
+  default: createSpeed = 600; break;
+}
+
+  if(frames%createSpeed===0) {
       //var height = Math.floor(Math.random()*400)
       circles.push(new Circle())
       
@@ -445,8 +464,8 @@ circles.forEach(function(circle){
     circle.draw()
     ball.draw();
     //ballota.draw();
-    ball.x = circle.x - 15;
-    ball.y = circle.y - 15;
+    ball.x = circle.x - 25;
+    ball.y = circle.y - 25;
     
     
 })
