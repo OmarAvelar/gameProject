@@ -325,7 +325,7 @@ function Pelotota(){
 var circle1 = new Circle();
 var circle2 = new Circle("yellow", 30, 100,100, 6, 0, 0);
 //var circle3 = new Circle();
-var mario = new Character(imagenes.mario,0,canvas.height -30,200,40);
+var mario = new Character(imagenes.mario,0,canvas.height -100,100,100);
 var marioDos = new Character(imagenes.mario,0,30,200,40);
 var ball = new Pelotitas();
 var circle = new Circle();
