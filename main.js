@@ -7,13 +7,15 @@ var frames = 0
 var circles = []
 //var randomNum = Math.floor(Math.random()*10);
 var imagenes = {
-  mario: "https://mbtskoudsalg.com/images/drawing-bugs-pill-bug-1.png",
+  mario: "star.png",
   ball: "marimo1.png",
   ball2: "marimo1.2.png",
   ball3: "marimo2.png",
   ball4: "marimo2.2.png",
   blowFish: "giphy.png",
-  blowFish2: "giphy3.png"
+  blowFish2: "giphy3.png",
+  star1: "star.png",
+  star2: "starSmileEye.png"
 }
 var vel = 2.2;
 
@@ -112,16 +114,31 @@ function Character(link,x,y,width,height){
   this.image.src = link
   this.x = x || 0
   this.y = y || canvas.height -60
-  this.width = width  || 40
-  this.height = height || 40
+  this.width = width  || 80
+  this.height = height || 80
   this.image.onload = function(){
     //this.draw()
   }.bind(this)
   
+
+  this.img5 = new Image()
+  this.img5.src = imagenes.star1 
+  this.img6 = new Image()
+  this.img6.src = imagenes.star2 
+
+
   this.draw = function(){
       this.boundaries()
-    ctx.drawImage(this.image, this.x, this.y, this.width, this.height)
+
+      var img = this.which ? this.img5:this.img6;
+
+    ctx.drawImage(img, this.x, this.y, this.width, this.height)
+    if(frames%80===0) this.toggleWhich();
   }
+    this.toggleWhich = function(){
+    this.which = !this.which;
+  }
+  
         this.boundaries = function(){
         if(this.x+this.width > canvas.width){
           this.x = canvas.width-this.width
@@ -252,7 +269,7 @@ function Pelotota(){
 var circle1 = new Circle();
 var circle2 = new Circle("yellow", 30, 100,100, 2, 0, 0);
 //var circle3 = new Circle();
-var mario = new Character(imagenes.mario,0,canvas.height -60,200,60);
+var mario = new Character(imagenes.mario,0,canvas.height -80,200,120);
 var ball = new Pelotitas();
 var circle = new Circle();
 var ballota = new Pelotota();
