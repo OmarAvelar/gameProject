@@ -1,6 +1,8 @@
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 var interval
+var counter = 0
+var counterWin = 0
 var frames = 0
 var circles = []
 //var randomNum = Math.floor(Math.random()*10);
@@ -202,8 +204,8 @@ function Pelotota(){
   this.imga.src = imagenes.blowFish
   this.x =  0
   this.y =  canvas.height -60
-  this.width =  105
-  this.height =  105
+  this.width =  125
+  this.height =  125
 
   this.img3 = new Image()
   this.img3.src = imagenes.blowFish 
@@ -248,7 +250,7 @@ function Pelotota(){
 //instancias
 
 var circle1 = new Circle();
-var circle2 = new Circle("pink", 20, 100,100, 2, 0, 0);
+var circle2 = new Circle("yellow", 30, 100,100, 2, 0, 0);
 //var circle3 = new Circle();
 var mario = new Character(imagenes.mario,0,canvas.height -60,200,60);
 var ball = new Pelotitas();
@@ -375,9 +377,25 @@ for(var circle of circles){
     //circles.pop(circle)
     var index = circles.indexOf(circle);
 if (index > -1) {
+  counter++
   circles.splice(index, 1);
 }
+console.log("se han muerto " + counter + " marimos")
+if (counter > 10){clearInterval(interval)}
+  }
 
+
+  if(circle.x > canvas.width -30){
+    //circles.pop(circle)
+    var index = circles.indexOf(circle);
+if (index > -1) {
+  counterWin++
+  circles.splice(index, 1);
+}
+console.log("se han salvado " + counterWin + " marimos")
+if (counter > 10){
+  console.log("Ganaste Bitch!")
+  clearInterval(interval)}
   }
 }
         
