@@ -8,7 +8,7 @@ var generateLevel = 0
 var frames = 0
 var createSpeed = 600
 var circles = []
-multiplayer = 2
+multiplayer = 0
 //var randomNum = Math.floor(Math.random()*10);
 var imagenes = {
   mario: "star.png",
