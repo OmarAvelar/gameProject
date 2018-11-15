@@ -4,6 +4,7 @@ var interval
 var counter = 0
 var counterWin = 0
 var counterLevel = 0
+var generateLevel = 0
 var frames = 0
 var createSpeed = 600
 var circles = []
@@ -96,8 +97,9 @@ function Circle(color, radius,x,y, velo, width, height){
     this.move();
     ctx.beginPath();
     ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
-    ctx.fillStyle = this.color;
-    ctx.fill();
+    //ctx.fillStyle = this.color;
+    ctx.stroke();
+    //ctx.fill();
     ctx.closePath();
   }
 }
@@ -291,6 +293,8 @@ function start(){
 
 
 function update(){
+  
+ 
 
   frames++;
   console.log(frames);
@@ -298,11 +302,17 @@ function update(){
   ctx.clearRect(0,0,1100,300);
   //circle1.draw();
   //if (counter > 2){circle2.draw();ballota.draw();}
-  circle2.draw(); 
+  if(counterLevel >= 2 && counterLevel < 4){
+    circle2.draw();
+    ballota.draw()
+    ballota.x = circle2.x - 55;
+    ballota.y = circle2.y - 55;
+  }
+  ////circle2.draw(); 
   mario.draw();
-  ballota.draw()
-  ballota.x = circle2.x - 55;
-  ballota.y = circle2.y - 55;
+  ////ballota.draw()
+  ////ballota.x = circle2.x - 55;
+  ////ballota.y = circle2.y - 55;
   //ball.x = circle2.x - 35;
   //ball.y = circle2.y - 35;
 
@@ -310,7 +320,42 @@ function update(){
   drawCircles();
   
 
+  if(counterLevel >= 2 && counterLevel < 4){
+    if(circle1.isTouching(circle2)){
+      circle2.color = "peru";
+      circle1.color = "peru";
+      if(vel < 5){
+        vel += 0;
+      }
+      circle2.toUp = !circle2.toUp
+      //circle2.toLeft = !circle2.toLeft
+      circle1.toUp = !circle1.toUp
+      circle1.toLeft = !circle1.toLeft
+      if(velo < 5){
+        velo += 0;
+      }
+    }else{
+      //circle2.color = "green";
+      //circle1.color = "red";
+    }
+  
+    if(mario.isTouching(circle2)){
+      circle2.color = "purple";
+   
+      circle2.toUp = !circle2.toUp
+      //circle2.toLeft = !circle2.toLeft
+      if(velo < 4){
+        velo += 0;
+      }
+    }else{
+      //circle2.color = "green";
+      //circle1.color = "red";
+      
+    }
+  }
 
+
+/*////
   if(circle1.isTouching(circle2)){
     circle2.color = "peru";
     circle1.color = "peru";
@@ -341,7 +386,7 @@ function update(){
     //circle2.color = "green";
     //circle1.color = "red";
     
-  }
+  }*/
 
 
   if(mario.isTouching(circle1)){
@@ -361,7 +406,29 @@ function update(){
 
 
 for(var circle of circles){
-  if(circle.isTouching(circle2)){
+
+
+  if(counterLevel >= 2 && counterLevel < 4){
+    if(circle.isTouching(circle2)){
+      circle.color = "brown";
+      circle2.toUp = !circle2.toUp
+      circle2.toLeft = !circle2.toLeft
+  
+      //circle2.toLeft = !circle2.toLeft
+      circle.toUp = !circle.toUp
+      circle.toLeft = !circle.toLeft
+      if(circle.vel < 5){
+        circle.vel += 1;
+      }
+      
+  
+    }
+
+  }
+
+
+  
+  /*////if(circle.isTouching(circle2)){
     circle.color = "brown";
     circle2.toUp = !circle2.toUp
     circle2.toLeft = !circle2.toLeft
@@ -374,7 +441,7 @@ for(var circle of circles){
     }
     
 
-  }
+  }*/
 }
 
 for(var circle of circles){
@@ -413,7 +480,8 @@ if (counter > 10){clearInterval(interval)}
 if (index > -1) {
   circles.splice(index, 1);
 }
-counterWin++
+counterWin++;
+generateLevel++;
 console.log("se han salvado " + counterWin + " marimos")
 console.log("counter level : " + counterLevel)
   if (counterWin%2===0){
