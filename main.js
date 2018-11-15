@@ -47,7 +47,7 @@ function Circle(color, radius,x,y, velo, width, height){
   }
   //funcion de toque
   this.isTouching = function(circle){
-    return this.getDistance(circle) < this.radius + circle.radius + 35;
+    return this.getDistance(circle) < this.radius + circle.radius;
   }
   
   //suma movimiento a los circulos
@@ -271,7 +271,7 @@ function Pelotota(){
 //instancias
 
 var circle1 = new Circle();
-var circle2 = new Circle("yellow", 30, 100,100, 2, 0, 0);
+var circle2 = new Circle("yellow", 30, 100,100, 6, 0, 0);
 //var circle3 = new Circle();
 var mario = new Character(imagenes.mario,0,canvas.height -30,200,40);
 var ball = new Pelotitas();
@@ -302,7 +302,7 @@ function update(){
   ctx.clearRect(0,0,1100,300);
   //circle1.draw();
   //if (counter > 2){circle2.draw();ballota.draw();}
-  if(counterLevel >= 2 && counterLevel < 4){
+  if(counterLevel >= 4 && counterLevel < 5){
     circle2.draw();
     ballota.draw()
     ballota.x = circle2.x - 55;
@@ -320,7 +320,7 @@ function update(){
   drawCircles();
   
 
-  if(counterLevel >= 2 && counterLevel < 4){
+  if(counterLevel >= 4 && counterLevel < 5){
     if(circle1.isTouching(circle2)){
       circle2.color = "peru";
       circle1.color = "peru";
@@ -392,7 +392,7 @@ function update(){
   if(mario.isTouching(circle1)){
     circle1.color = "purple";
     if(vel < 3){
-      vel += .5;
+      vel += 0;
     }
     circle1.toUp = !circle1.toUp
     //circle1.toLeft = !circle1.toLeft
@@ -407,8 +407,8 @@ function update(){
 
 for(var circle of circles){
 
-
-  if(counterLevel >= 2 && counterLevel < 4){
+//pez gordo
+  if(counterLevel >= 4 && counterLevel < 5){
     if(circle.isTouching(circle2)){
       circle.color = "brown";
       circle2.toUp = !circle2.toUp
@@ -488,7 +488,7 @@ console.log("counter level : " + counterLevel)
     counterLevel++;
   }
 
-if (counterWin > 10){
+if (counterWin > 20){
   console.log("Ganaste!")
   clearInterval(interval)}
   }
@@ -513,6 +513,11 @@ function generateCircles(){
 switch (counterLevel){
 
   case 1: createSpeed = 100; break;
+  case 2: createSpeed = 400; break;
+  case 3: createSpeed = 500; vel=4;  break;
+  case 4: createSpeed = 300; vel=4;  break;
+  case 5: createSpeed = 300; vel=3;  break;
+
   default: createSpeed = 600; break;
 }
 
