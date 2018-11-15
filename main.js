@@ -3,15 +3,16 @@ var ctx = canvas.getContext('2d');
 var interval
 var frames = 0
 var circles = []
+//var randomNum = Math.floor(Math.random()*10);
 var imagenes = {
   mario: "https://mbtskoudsalg.com/images/drawing-bugs-pill-bug-1.png",
-  ball: "http://www.pngall.com/wp-content/uploads/2016/06/Beach-Ball.png",
-  ball2: "http://1.bp.blogspot.com/-Uq-KszfMzkU/Uuk4WdF_R2I/AAAAAAAAAJk/HinNF82JwS4/s1600/2LYamDK.png"
+  ball: "marimo1.png",
+  ball2: "marimo1.2.png",
+  ball3: "marimo2.png",
+  ball4: "marimo2.2.png",
+  blowFish: "https://i.pinimg.com/originals/0e/0d/61/0e0d6156e185837274c71cd61521fd73.png"
 }
 var vel = 2.2;
-
-
-
 
 
 
@@ -23,7 +24,7 @@ function Circle(color, radius,x,y, velo, width, height){
   this.width = width ? width : 0;
   this.height = height ? height : 0;
   this.radius = radius ? radius : 1;
-  this.color = color ? color : "red";
+  this.color = color ? color : "green";
   this.isMoving = true;
   this.toUp = false;
   this.toLeft = false;
@@ -138,21 +139,29 @@ function Character(link,x,y,width,height){
 
 
 
-function Pelotitas(link,x,y,width,height){
-  this.image = new Image()
-  this.image.src = link
-  this.x = x || 0
-  this.y = y || canvas.height -60
-  this.width = width  || 40
-  this.height = height || 40
+function Pelotitas(){
+  //this.image = new Image()
+  //this.image.src = link
+  this.x =  0
+  this.y =  canvas.height -60
+  this.width =  55
+  this.height =  55
+
+ var randomNum = Math.floor(Math.random()*10)
+if(randomNum < 5){
   this.img1 = new Image()
   this.img1.src = imagenes.ball 
   this.img2 = new Image()
   this.img2.src = imagenes.ball2 
+}else {
+  this.img1 = new Image()
+  this.img1.src = imagenes.ball3 
+  this.img2 = new Image()
+  this.img2.src = imagenes.ball4 
+}
+  console.log("########################" + randomNum)
 
-  this.image.onload = function(){
-    //this.draw()
-  }.bind(this)
+  
   
   this.draw = function(){
       this.boundaries()
@@ -191,7 +200,7 @@ var circle1 = new Circle();
 var circle2 = new Circle("green", 30, 100,100, 2, 0, 0);
 //var circle3 = new Circle();
 var mario = new Character(imagenes.mario,0,canvas.height -60,200,60);
-var ball = new Pelotitas(imagenes.ball);
+var ball = new Pelotitas();
 var circle = new Circle();
 
 //circle1.draw();
@@ -210,7 +219,7 @@ function start(){
 
 
 function update(){
-  
+
   frames++;
   console.log(frames);
   
@@ -294,7 +303,7 @@ for(var circle of circles){
 
 for(var circle of circles){
   if(mario.isTouching(circle)){
-    circle.color = "purple";
+    circle.color = "green";
     if(vel < 4){
       vel += 0;
     }
@@ -348,6 +357,7 @@ circles.forEach(function(circle){
     ball.draw();
     ball.x = circle.x - 15;
     ball.y = circle.y - 15;
+    
 })
 }
 
