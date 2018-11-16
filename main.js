@@ -9,6 +9,15 @@ var generateLevel = 0
 var frames = 0
 var createSpeed = 600
 var circles = []
+var soundGB = new Audio('');
+var soundInGame = new Audio('harbor.mp3');
+var soundLevel = new Audio('GoronRace.mp3');
+var soundLevelTwo = new Audio('strongKong.mp3');
+var soundLose = new Audio('endingBad.mp3');
+var soundWin = new Audio('Ending.mp3');
+
+
+//soundGB.play();
 //var randomNum = Math.floor(Math.random()*10);
 var imagenes = {
   bg: "https://orig00.deviantart.net/c08a/f/2014/010/6/8/cartoon__underwater_background_by_slaterdies-d71ppab.png",
@@ -362,6 +371,12 @@ var bg = new Board()
 
 
 function start(){
+  soundLose.pause();
+  soundWin.pause();
+  soundLevel.pause();
+  soundLevelTwo.pause();
+  soundInGame.play();
+  vel = 2.2;
   circles = []
   frames = 0
   counter = 0
@@ -385,7 +400,7 @@ function update(){
 
   //circle1.draw();
   //if (counter > 2){circle2.draw();ballota.draw();}
-  if(counterLevel >= 2 && counterLevel < 5){
+  if(counterLevel >= 2 && counterLevel <= 7){
     circle2.draw();
     ballota.draw()
     ballota.x = circle2.x - 55;
@@ -408,7 +423,7 @@ function update(){
   drawCircles();
   
 
-  if(counterLevel >= 2 && counterLevel < 5){
+  if(counterLevel >= 2 && counterLevel <= 7){
     if(circle1.isTouching(circle2)){
       circle2.color = "peru";
       circle1.color = "peru";
@@ -496,7 +511,7 @@ function update(){
 for(var circle of circles){
 
 //pez gordo
-  if(counterLevel >= 2 && counterLevel < 5){
+  if(counterLevel >= 2 && counterLevel <= 7){
     if(circle.isTouching(circle2)){
       circle.color = "brown";
       circle2.toUp = !circle2.toUp
@@ -573,7 +588,11 @@ if (index > -1) {
   circles.splice(index, 1);
 }
 console.log("se han muerto " + counter + " marimos")
-if (counter > 10){
+if (counter >= 15){
+  soundInGame.pause();
+  soundLevel.pause();
+  soundLevelTwo.pause();
+  soundLose.play();
   gameOver();
 }
   }
@@ -614,8 +633,13 @@ console.log("counter level : " + counterLevel)
     counterLevel++;
   }
 
-if (counterWin > 10){
-  console.log("Ganaste!")
+if (counterWin >= 14){
+  console.log("Ganaste!");
+  soundLose.pause();
+  soundLevel.pause();
+  soundLevelTwo.pause();
+  soundInGame.pause();
+  soundWin.play();
   gameWon();
   clearInterval(interval)}
   }
@@ -670,12 +694,14 @@ function generateCircles(){
 
 switch (counterLevel){
 
-  case 0: createSpeed = 350; break;
-  case 1: createSpeed = 100; break;
-  case 2: createSpeed = 300; break;
-  case 3: createSpeed = 500; vel=4;  break;
+  case 0: createSpeed = 400; break;
+  case 1: createSpeed = 400; vel=4;  break;
+  case 2: createSpeed = 100; vel=2; soundInGame.pause(); soundLevel.play(); break;
+  case 3: createSpeed = 400; vel=5;  break;
   case 4: createSpeed = 300; vel=4;  break;
-  case 5: createSpeed = 300; vel=3;  break;
+  case 5: createSpeed = 300; vel=3;  soundLevel.pause(); soundLevelTwo.play(); break;
+  case 6: createSpeed = 200; vel=4;  break;
+  case 7: createSpeed = 400; vel=4;  break;
 
   default: createSpeed = 400; break;
 }
@@ -683,7 +709,7 @@ switch (counterLevel){
   if(frames%createSpeed===0) {
       //var height = Math.floor(Math.random()*400)
       circles.push(new Circle())
-      
+      soundGB.play();
   }
   
 }
