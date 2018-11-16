@@ -15,6 +15,9 @@ var soundLevel = new Audio('GoronRace.mp3');
 var soundLevelTwo = new Audio('strongKong.mp3');
 var soundLose = new Audio('endingBad.mp3');
 var soundWin = new Audio('Ending.mp3');
+var soundSuccess = new Audio('collectPearl.mp3');
+var soundFailure = new Audio('loseMarimo.mp3');
+
 
 
 //soundGB.play();
@@ -32,6 +35,10 @@ var imagenes = {
   star2: "monsterSea2.png",
   starPlayerTwo1: "pezPlayerTwo1.png",
   starPlayerTwo2: "pezPlayerTwo2.png",
+  flechas: "flechas.png",
+  flechaswasd: "wasd-keys-png-2.png",
+  imgWinMarimo: "marimoWin.png",
+  imgLostMarimo: "mariomoLost.png"
 }
 var vel = 2.2;
 
@@ -52,7 +59,9 @@ function Board(){
 
   this.drawScore = function(){
       ctx.font = "bold 24px Avenir"
-      ctx.fillText("Score: " + counterWin, 50,50)
+      ctx.fillText("Marimos por salvar: 14/" + counterWin, 50,50)
+      ctx.fillText("Marimos muertos: 10/" + counter, 750,50)
+
   }
 }
 
@@ -585,10 +594,11 @@ for(var circle of circles){
     var index = circles.indexOf(circle);
 if (index > -1) {
   counter++
+  soundFailure.play();
   circles.splice(index, 1);
 }
 console.log("se han muerto " + counter + " marimos")
-if (counter >= 15){
+if (counter >= 10){
   soundInGame.pause();
   soundLevel.pause();
   soundLevelTwo.pause();
@@ -604,6 +614,7 @@ if (counter >= 15){
       var index = circles.indexOf(circle);
   if (index > -1) {
     counter++
+    soundFailure.play();
     circles.splice(index, 1);
   }
   console.log("se han muerto " + counter + " marimos")
@@ -627,6 +638,7 @@ if (index > -1) {
 }
 counterWin++;
 generateLevel++;
+soundSuccess.play();
 console.log("se han salvado " + counterWin + " marimos")
 console.log("counter level : " + counterLevel)
   if (counterWin%2===0){
@@ -651,39 +663,55 @@ if (counterWin >= 14){
 function gameOver(){
   clearInterval(interval)
   interval = null
+
+  //var imgLost = new Image()
+  //imgLost.src = imagenes.imgLostMarimo;
+  //ctx.drawImage(imgWon, 750,120,300,300)
   ctx.fillStyle = "red"
-  ctx.font = "bold 80px Arial"
-  ctx.fillText("GAME OVER", 50,200)
+  ctx.font = "bold 80px 'Corben', Georgia, Times, serif"
+  ctx.fillText("Game Over", 350,200)
   ctx.fillStyle = "black"
-  ctx.font = "bold 40px Arial"
-  ctx.fillText("Tu score: " + counterWin, 200,300)
-  ctx.font = "bold 20px Arial"
-  ctx.fillText("Presiona 'Return' para reiniciar", 50,350)
+  ctx.font = "bold 20px 'Corben', Georgia, Times, serif"
+  ctx.fillText("Presiona 'Return' para reiniciar", 250,350)
 }
 
 
 function gameWon(){
   clearInterval(interval)
   interval = null
-  ctx.fillStyle = "red"
-  ctx.font = "bold 80px Arial"
-  ctx.fillText("Ganaste!!", 50,200)
+  ctx.fillStyle = "green"
+  ctx.font = "bold 80px 'Corben', Georgia, Times, serif";
+  //var imgWon = new Image()
+  //imgWon.src = imagenes.imgWinMarimo;
+  //ctx.drawImage(imgWon, 750,120,300,300)
+  ctx.fillText("Ganaste!!", 350,200)
   ctx.fillStyle = "black"
-  ctx.font = "bold 40px Arial"
-  ctx.fillText("Tu score: " + counterWin, 200,300)
-  ctx.font = "bold 20px Arial"
-  ctx.fillText("Presiona 'Return' para reiniciar", 50,350)
+  ctx.font = "bold 20px 'Corben', Georgia, Times, serif"
+  ctx.fillText("Presiona 'Return' para reiniciar", 250,350)
 }
 
 
 function drawCover(){
   var img = new Image()
   img.src = imagenes.mario
+  var imgFlechas = new Image()
+  imgFlechas.src = imagenes.flechas;
+  var imgFlechasDos = new Image()
+  imgFlechasDos.src = imagenes.flechaswasd;
   img.onload = function(){
       bg.draw()
-      ctx.drawImage(img, 50,50,300,300)
-      ctx.font = "bold 24px Avenir"
-      ctx.fillText("Presiona la tecla 'Return' para comenzar", 50,300)
+      ctx.drawImage(img, 750,120,300,300)
+      ctx.drawImage(imgFlechas, 750,0,160,160)
+      ctx.drawImage(imgFlechasDos, 950,0,70,70)
+
+      ctx.font = "bold 14px 'Corben', Georgia, Times, serif";
+      ctx.fillText("Player 2", 900,10)
+      ctx.font = "bold 23px 'Corben', Georgia, Times, serif";
+      
+      ctx.fillText("Usa las flechas Izquierda y Derecha del teclado,", 50,150)
+      ctx.fillText("  salva a los Marimos!", 177,185)
+
+      ctx.fillText("Presiona la tecla 'Return' para comenzar", 200,350)
   }
 }
 
@@ -699,7 +727,7 @@ switch (counterLevel){
   case 2: createSpeed = 100; vel=2; soundInGame.pause(); soundLevel.play(); break;
   case 3: createSpeed = 400; vel=5;  break;
   case 4: createSpeed = 300; vel=4;  break;
-  case 5: createSpeed = 300; vel=3;  soundLevel.pause(); soundLevelTwo.play(); break;
+  case 5: createSpeed = 300; vel=5;velo=7;  soundLevel.pause(); soundLevelTwo.play(); break;
   case 6: createSpeed = 200; vel=4;  break;
   case 7: createSpeed = 400; vel=4;  break;
 
