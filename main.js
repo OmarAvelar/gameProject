@@ -1,3 +1,4 @@
+var multiplayer = prompt("Ingresa el número de jugadores: ")
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 var interval
@@ -8,9 +9,9 @@ var generateLevel = 0
 var frames = 0
 var createSpeed = 600
 var circles = []
-multiplayer = 0
 //var randomNum = Math.floor(Math.random()*10);
 var imagenes = {
+  bg: "https://orig00.deviantart.net/c08a/f/2014/010/6/8/cartoon__underwater_background_by_slaterdies-d71ppab.png",
   mario: "star.png",
   ball: "marimo1.png",
   ball2: "marimo1.2.png",
@@ -18,18 +19,40 @@ var imagenes = {
   ball4: "marimo2.2.png",
   blowFish: "giphy.png",
   blowFish2: "giphy3.png",
-  star1: "star.png",
-  star2: "starSmileEye.png"
+  star1: "monsterSea1.png",
+  star2: "monsterSea2.png",
+  starPlayerTwo1: "pezPlayerTwo1.png",
+  starPlayerTwo2: "pezPlayerTwo2.png",
 }
 var vel = 2.2;
 
+function Board(){
+  this.x = 0
+  this.y = 0
+  this.width = canvas.width
+  this.height = canvas.height
+  this.image = new Image()
+  this.image.src = imagenes.bg
+  //this.image.onload = ()=>this.draw()
+  this.draw = function(){
+      //this.x--
+      //if(this.x < -this.width) this.x = 0
+      ctx.drawImage(this.image,this.x,this.y,this.width,this.height)
+      //ctx.drawImage(this.image,this.x + this.width,this.y,this.width,this.height)
+  }
 
+  this.drawScore = function(){
+      ctx.font = "bold 24px Avenir"
+      ctx.fillText("Score: " + counterWin, 50,50)
+  }
+}
 
 //ctx.fillRect(0,0,300,200);
 //Se genera el circulo
 function Circle(color, radius,x,y, velo, width, height){
+  Board.call(this)
   this.x = x ? x : 50;
-  this.y = y ? y : 100;
+  this.y = y ? y : 150;
   this.width = width ? width : 0;
   this.height = height ? height : 0;
   this.radius = radius ? radius : 1;
@@ -175,16 +198,16 @@ function CharacterDos(link,x,y,width,height){
   }.bind(this)
   
 
-  this.img5 = new Image()
-  this.img5.src = imagenes.star1 
-  this.img6 = new Image()
-  this.img6.src = imagenes.star2 
+  this.img7 = new Image()
+  this.img7.src = imagenes.starPlayerTwo1
+  this.img8 = new Image()
+  this.img8.src = imagenes.starPlayerTwo2
 
 
   this.draw = function(){
       this.boundaries()
 
-      var img = this.which ? this.img5:this.img6;
+      var img = this.which ? this.img7:this.img8;
 
     ctx.drawImage(img, this.x, this.y, this.width, this.height)
     if(frames%80===0) this.toggleWhich();
@@ -325,11 +348,13 @@ function Pelotota(){
 var circle1 = new Circle();
 var circle2 = new Circle("yellow", 30, 100,100, 6, 0, 0);
 //var circle3 = new Circle();
-var mario = new Character(imagenes.mario,0,canvas.height -70,100,100);
-var marioDos = new Character(imagenes.mario,0,30,200,40);
+var mario = new Character(imagenes.mario,0,canvas.height -80,200,100);
+var marioDos = new CharacterDos(imagenes.mario,0,0,200,100);
 var ball = new Pelotitas();
 var circle = new Circle();
 var ballota = new Pelotota();
+var bg = new Board()
+
 //circle1.draw();
 //circle2.draw();
 
@@ -339,6 +364,9 @@ var ballota = new Pelotota();
 function start(){
   circles = []
   frames = 0
+  counter = 0
+  counterWin = 0
+  counterLevel = 0
   //flappy = new Flappy()
   if(!interval) interval = setInterval(update,1000/60)
 }
@@ -348,14 +376,16 @@ function start(){
 function update(){
   
  
-
   frames++;
   console.log(frames);
   
-  ctx.clearRect(0,0,1100,300);
+  ctx.clearRect(0,0,1100,400);
+  bg.draw();
+  bg.drawScore()
+
   //circle1.draw();
   //if (counter > 2){circle2.draw();ballota.draw();}
-  if(counterLevel >= 3 && counterLevel < 5){
+  if(counterLevel >= 2 && counterLevel < 5){
     circle2.draw();
     ballota.draw()
     ballota.x = circle2.x - 55;
@@ -364,7 +394,7 @@ function update(){
   ////circle2.draw(); 
   mario.draw();
   /////
-  if(multiplayer >= 1){
+  if(multiplayer > 1){
     marioDos.draw();
   }
   
@@ -378,7 +408,7 @@ function update(){
   drawCircles();
   
 
-  if(counterLevel >= 3 && counterLevel < 5){
+  if(counterLevel >= 2 && counterLevel < 5){
     if(circle1.isTouching(circle2)){
       circle2.color = "peru";
       circle1.color = "peru";
@@ -466,7 +496,7 @@ function update(){
 for(var circle of circles){
 
 //pez gordo
-  if(counterLevel >= 3 && counterLevel < 5){
+  if(counterLevel >= 2 && counterLevel < 5){
     if(circle.isTouching(circle2)){
       circle.color = "brown";
       circle2.toUp = !circle2.toUp
@@ -543,10 +573,12 @@ if (index > -1) {
   circles.splice(index, 1);
 }
 console.log("se han muerto " + counter + " marimos")
-if (counter > 10){clearInterval(interval)}
+if (counter > 10){
+  gameOver();
+}
   }
 
-  if(multiplayer >= 1){
+  if(multiplayer > 1){
     if(circle.y < 10 ){
       circle.color = "yellow"
       //circles.pop(circle)
@@ -582,22 +614,54 @@ console.log("counter level : " + counterLevel)
     counterLevel++;
   }
 
-if (counterWin > 12){
+if (counterWin > 10){
   console.log("Ganaste!")
+  gameWon();
   clearInterval(interval)}
   }
 }
         
-
-
-
-
-
 }
 
 
+function gameOver(){
+  clearInterval(interval)
+  interval = null
+  ctx.fillStyle = "red"
+  ctx.font = "bold 80px Arial"
+  ctx.fillText("GAME OVER", 50,200)
+  ctx.fillStyle = "black"
+  ctx.font = "bold 40px Arial"
+  ctx.fillText("Tu score: " + counterWin, 200,300)
+  ctx.font = "bold 20px Arial"
+  ctx.fillText("Presiona 'Return' para reiniciar", 50,350)
+}
 
 
+function gameWon(){
+  clearInterval(interval)
+  interval = null
+  ctx.fillStyle = "red"
+  ctx.font = "bold 80px Arial"
+  ctx.fillText("Ganaste!!", 50,200)
+  ctx.fillStyle = "black"
+  ctx.font = "bold 40px Arial"
+  ctx.fillText("Tu score: " + counterWin, 200,300)
+  ctx.font = "bold 20px Arial"
+  ctx.fillText("Presiona 'Return' para reiniciar", 50,350)
+}
+
+
+function drawCover(){
+  var img = new Image()
+  img.src = imagenes.mario
+  img.onload = function(){
+      bg.draw()
+      ctx.drawImage(img, 50,50,300,300)
+      ctx.font = "bold 24px Avenir"
+      ctx.fillText("Presiona la tecla 'Return' para comenzar", 50,300)
+  }
+}
 
 
 function generateCircles(){
@@ -606,14 +670,14 @@ function generateCircles(){
 
 switch (counterLevel){
 
-  case 0: createSpeed = 400; break;
+  case 0: createSpeed = 350; break;
   case 1: createSpeed = 100; break;
-  case 2: createSpeed = 400; break;
+  case 2: createSpeed = 300; break;
   case 3: createSpeed = 500; vel=4;  break;
   case 4: createSpeed = 300; vel=4;  break;
   case 5: createSpeed = 300; vel=3;  break;
 
-  default: createSpeed = 600; break;
+  default: createSpeed = 400; break;
 }
 
   if(frames%createSpeed===0) {
@@ -664,3 +728,5 @@ addEventListener('keydown', function(e){
   }
   
 })
+
+drawCover()
